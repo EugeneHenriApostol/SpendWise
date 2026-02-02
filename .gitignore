@@ -8,3 +8,6 @@ obj/
 # User-specific files
 *.user
 *.suo
+
+# Secrets & local dev config
+appsettings.Development.json
