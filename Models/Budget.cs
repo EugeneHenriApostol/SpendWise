@@ -3,7 +3,7 @@
     public class Budget : BaseEntity
     {
         public decimal BudgetAmount { get; set; }
-        public int Months { get; set; }
+        public int Month { get; set; }
         public int Year { get; set; }
 
         // Foreign key

@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SpendWise.Data;
+using SpendWise.DTO;
 using SpendWise.Models;
 
-namespace SpendWise.Repository.BudgetRepo
+namespace SpendWise.Repository
 {
-    public class BudgetRepository : IBudgetRepository
+    public class BudgetRepository
     {
         private readonly AppDbContext _context;
 
@@ -13,26 +14,42 @@ namespace SpendWise.Repository.BudgetRepo
             _context = context;
         }
 
-        public async Task<Budget> AddBudgetAsync(Budget budget)
+        public async Task<Budget> AddBudget(Budget budget)
         {
+            budget.MarkCreated();
+
             _context.Budgets.Add(budget);
             await _context.SaveChangesAsync();
+
             return budget;
         }
 
-        public async Task<Budget> UpdateBudgetAsync(Budget budget)
+        public async Task<Budget> UpdateBudget(string userId, int budgetId, UpdateBudgetDto dto)
         {
-            _context.Budgets.Update(budget);
+            var budget = await _context.Budgets.FirstOrDefaultAsync(b => b.UserId == userId && b.Id == budgetId && !b.IsDeleted);
+
+            if (budget == null)
+            {
+                throw new Exception("Budget not found");
+            }
+
+            budget.BudgetAmount = dto.BudgetAmount;
+            budget.Month = dto.Month;
+            budget.Year = dto.Year;
+
+            budget.MarkUpdated();
+
             await _context.SaveChangesAsync();
+
             return budget;
         }
 
-        public async Task<Budget?> GetBudgetAsync(string userId, int month, int year)
+        public async Task<Budget?> GetBudget(string userId, int month, int year)
         {
-            return await _context.Budgets.FirstOrDefaultAsync(b => b.UserId == userId && b.Months == month && b.Year == year);
+            return await _context.Budgets.FirstOrDefaultAsync(b => b.UserId == userId && b.Month == month && b.Year == year);
         }
 
-        public async Task<Budget> DeleteBudgetAsync(string userId, int budgetId)
+        public async Task<Budget> DeleteBudget(string userId, int budgetId)
         {
             var budget = await _context.Budgets.FirstOrDefaultAsync(b => b.Id == budgetId
                                                                     && b.UserId == userId

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpendWise.DTO.Authentication;
-using SpendWise.Service.Interface;
+using SpendWise.Service;
 
 namespace SpendWise.Controllers
 {
@@ -9,9 +9,9 @@ namespace SpendWise.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly AuthService _authService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(AuthService authService)
         {
             _authService = authService;
         }
@@ -19,7 +19,7 @@ namespace SpendWise.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            var result = await _authService.LoginAsync(dto);
+            var result = await _authService.Login(dto);
 
             if (!result.Success)
             {
@@ -32,7 +32,7 @@ namespace SpendWise.Controllers
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp(SignUpDto dto)
         {
-            var result = await _authService.SignUpAsync(dto);
+            var result = await _authService.SignUp(dto);
 
             if (!result.Success)
             {

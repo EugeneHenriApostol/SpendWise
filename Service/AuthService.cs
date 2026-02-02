@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using SpendWise.Service.Interface;
 using SpendWise.Models;
 using SpendWise.DTO.Authentication;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -8,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace SpendWise.Service
 {
-    public class AuthService : IAuthService
+    public class AuthService
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
@@ -23,7 +22,7 @@ namespace SpendWise.Service
             _configuration = configuration;
         }
 
-        public async Task<AuthResult> LoginAsync(LoginDto dto)
+        public async Task<AuthResult> Login(LoginDto dto)
         {
             // check if user exists
             var user = await _userManager.FindByEmailAsync(dto.Email);
@@ -57,7 +56,7 @@ namespace SpendWise.Service
             return new AuthResult(true, null, response);
         }
 
-        public async Task<AuthResult> SignUpAsync(SignUpDto dto)
+        public async Task<AuthResult> SignUp(SignUpDto dto)
         {
             // check if email is already registered
             var existingUser = await _userManager.FindByEmailAsync(dto.Email);
@@ -136,5 +135,11 @@ namespace SpendWise.Service
 
             return tokenHandler.CreateToken(descriptor);
         }
+
+        public record AuthResult(
+                    bool Success,
+                    string? ErrorMessage,
+                    AuthResponseDto? User
+        );
     }
 }

@@ -5,8 +5,8 @@ using SpendWise.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using SpendWise.Service.Interface;
 using SpendWise.Service;
+using SpendWise.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,8 +56,13 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// dependency injection
-builder.Services.AddScoped<IAuthService, AuthService>();
+// dependency injection - service
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<BudgetService>();
+
+// dependency injection - repo
+builder.Services.AddScoped<BudgetRepository>();
+builder.Services.AddScoped<CategoryRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 
