@@ -25,6 +25,7 @@ namespace SpendWise.Service
             var budget = new Budget
             {
                 UserId = userId,
+                BudgetAmount = dto.Amount,
                 Month = dto.Month,
                 Year = dto.Year,
             };

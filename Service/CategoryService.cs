@@ -13,14 +13,20 @@ namespace SpendWise.Service
             _categoryRepo = categoryRepo;
         }
 
-        public async Task<CategoryResponseDto> AddCategory(string userId, Category category)
+        public async Task<CategoryResponseDto> AddCategory(string userId, CreateCategoryDto dto)
         {
-            var existing = await _categoryRepo.GetCategoryById(userId, category.Id);
+            var existing = await _categoryRepo.GetCategoryById(userId, dto.Id);
 
             if (existing != null)
             {
                 throw new KeyNotFoundException("This category already exists");
             }
+
+            var category = new Category
+            {
+                CategoryName = dto.Name,
+                CategoryType = dto.Type
+            };
  
             var newCategory = await _categoryRepo.AddCategory(category);
 

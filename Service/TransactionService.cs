@@ -1,4 +1,5 @@
 ﻿using SpendWise.DTO.Transaction;
+using SpendWise.Models;
 using SpendWise.Repository;
 
 namespace SpendWise.Service
@@ -12,9 +13,16 @@ namespace SpendWise.Service
             _repo = repo;
         }
 
-        public async Task<TransactionResponseDto> AddTransaction(Models.Transaction transaction)
+        public async Task<TransactionResponseDto> AddTransaction(CreateTransactionDto dto)
         {
-            var addTransaction = await _repo.AddTransaction(transaction);
+            var mapTransaction = new Transaction
+            {
+                TransactionAmount = dto.Amount,
+                TransactionType = dto.Type,
+                TransactionDate = dto.Date
+            };
+
+            var addTransaction = await _repo.AddTransaction(mapTransaction);
 
             return new TransactionResponseDto
             {
