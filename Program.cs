@@ -59,10 +59,13 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 // dependency injection - service
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<BudgetService>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<TransactionService>();
 
 // dependency injection - repo
 builder.Services.AddScoped<BudgetRepository>();
 builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<TransactionRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 

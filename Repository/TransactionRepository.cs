@@ -1,8 +1,8 @@
 ﻿using SpendWise.Data;
 using System.Transactions;
 using SpendWise.Models;
-using SpendWise.DTO;
 using Microsoft.EntityFrameworkCore;
+using SpendWise.DTO.Transaction;
 
 namespace SpendWise.Repository
 {

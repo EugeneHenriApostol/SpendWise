@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SpendWise.Data;
-using SpendWise.DTO;
+using SpendWise.DTO.Budget;
 using SpendWise.Models;
 
 namespace SpendWise.Repository

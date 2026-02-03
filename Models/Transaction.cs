@@ -4,7 +4,7 @@
     {
         public required decimal TransactionAmount { get; set; }
         public required string TransactionType { get; set; }
-        public required DateTime TransactionDate { get; set; }
+        public required DateTime TransactionDate { get; set; } = DateTime.UtcNow;
 
         // Foreign key
         public string UserId { get; set; } = string.Empty;

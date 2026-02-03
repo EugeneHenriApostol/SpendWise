@@ -1,7 +1,6 @@
 ﻿using SpendWise.Repository;
 using SpendWise.Models;
 using SpendWise.DTO.Budget;
-using SpendWise.DTO;
 
 namespace SpendWise.Service
 {
@@ -14,14 +13,21 @@ namespace SpendWise.Service
             _budgetRepo = budgetRepo;
         }
 
-        public async Task<BudgetResponseDto> AddBudget(string userId, Budget budget)
+        public async Task<BudgetResponseDto> AddBudget(string userId, CreateBudgetDto dto)
         {
-            var existing = await _budgetRepo.GetBudget(userId, budget.Month, budget.Year);
+            var existing = await _budgetRepo.GetBudget(userId, dto.Month, dto.Year);
 
             if (existing != null)
             {
                 throw new KeyNotFoundException("Budget already exists for this month");
             }
+
+            var budget = new Budget
+            {
+                UserId = userId,
+                Month = dto.Month,
+                Year = dto.Year,
+            };
 
             budget = await _budgetRepo.AddBudget(budget);
 

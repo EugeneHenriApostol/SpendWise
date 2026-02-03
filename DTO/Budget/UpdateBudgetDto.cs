@@ -1,4 +1,4 @@
-﻿namespace SpendWise.DTO
+﻿namespace SpendWise.DTO.Budget
 {
     public class UpdateBudgetDto
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SpendWise.Data;
-using SpendWise.DTO;
+using SpendWise.DTO.Category;
 using SpendWise.Models;
 
 namespace SpendWise.Repository
@@ -41,7 +41,7 @@ namespace SpendWise.Repository
             return category;
         }
 
-        public async Task<IEnumerable<Category>> GetAllCategory(string userId)
+        public async Task<IEnumerable<Category>> GetAllCategories(string userId)
         {
             return await _context.Categories.Where(c => c.UserId == userId && !c.IsDeleted).ToListAsync();
         }
