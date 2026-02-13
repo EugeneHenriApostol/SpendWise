@@ -8,6 +8,10 @@
         public DateTime? TargetDate { get; set; }
         public bool IsCompleted { get; private set; }
 
+        // Foreign key
+        public string UserId { get; set; } = string.Empty;
+        public User? User { get; set; }
+
         // Navigation property
         public ICollection<SavingsContribution> Contributions { get; set; } = [];
 

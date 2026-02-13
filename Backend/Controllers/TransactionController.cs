@@ -19,18 +19,9 @@ namespace SpendWise.Controllers
             _service = service;
         }
 
-        private string? GetUserId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         [HttpPost]
         public async Task<IActionResult> AddTransaction(CreateTransactionDto dto)
         {
-            var userId = GetUserId();
-
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
             var result = await _service.AddTransaction(dto);
 
             return Ok(result);
@@ -39,14 +30,38 @@ namespace SpendWise.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTransactions()
         {
-            var userId = GetUserId();
+            var result = await _service.GetAllTransactions(UserId);
 
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
+            return Ok(result);
+        }
 
-            var result = await _service.GetAllTransactions(userId);
+        [HttpGet("{id: int}")]
+        public async Task<IActionResult> GetTransactionById(int id)
+        {
+            var result = await _service.GetTransactionById(UserId, id);
+
+            return Ok(result);
+        }
+
+        [HttpGet("{month}")]
+        public async Task<IActionResult> GetTransactionByMonth(int id, int month)
+        {
+            var result = await _service.GetTransactionByMonth(UserId, id, month);
+
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTransaction(int id, UpdateTransactionDto dto)
+        {
+            var result = await _service.UpdateTransaction(UserId, id, dto);
+
+            return Ok(result);
+        }
+
+        public async Task<IActionResult> DeleteTransaction(int id)
+        {
+            var result = await _service.DeleteTransaction(UserId, id);
 
             return Ok(result);
         }

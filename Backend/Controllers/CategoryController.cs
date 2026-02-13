@@ -20,19 +20,11 @@ namespace SpendWise.Controllers
             _service = service;
         }
 
-        private string? GetUserId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         [HttpPost]
         public async Task<IActionResult> AddCategory(CreateCategoryDto dto)
         {
-            var userId = GetUserId();
 
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            var result = await _service.AddCategory(userId, dto);
+            var result = await _service.AddCategory(UserId, dto);
 
             return Ok(result);
         }
@@ -40,14 +32,7 @@ namespace SpendWise.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
-            var userId = GetUserId();
-
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            var result = await _service.GetAllCategories(userId);
+            var result = await _service.GetAllCategories(UserId);
 
             return Ok(result);
         }
@@ -55,14 +40,7 @@ namespace SpendWise.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
-            var userId = GetUserId();
-
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            var result = await _service.GetCategoryById(userId, id);
+            var result = await _service.GetCategoryById(UserId, id);
 
             return Ok(result);
         }
@@ -70,14 +48,7 @@ namespace SpendWise.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryDto dto)
         {
-            var userId = GetUserId();
-
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            var result = await _service.UpdateCategory(userId, id, dto);
+            var result = await _service.UpdateCategory(UserId, id, dto);
 
             return Ok(result);
         }
@@ -85,14 +56,7 @@ namespace SpendWise.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var userId = GetUserId();
-
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            var result = await _service.DeleteCategory(userId, id);
+            var result = await _service.DeleteCategory(UserId, id);
 
             return Ok(result);
         }
