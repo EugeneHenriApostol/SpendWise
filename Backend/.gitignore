@@ -11,3 +11,4 @@ obj/
 
 # Secrets & local dev config
 appsettings.Development.json
+appsettings.json
