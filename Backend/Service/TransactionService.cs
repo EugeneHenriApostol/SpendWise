@@ -13,82 +13,84 @@ namespace SpendWise.Service
             _repo = repo;
         }
 
-        public async Task<TransactionResponseDto> AddTransaction(CreateTransactionDto dto)
+        public async Task<TransactionResponseDto> AddTransaction(string userId, CreateTransactionDto dto)
         {
-            var mapTransaction = new Transaction
+            var transaction = new Transaction
             {
+                UserId = userId,
                 TransactionAmount = dto.Amount,
                 TransactionType = dto.Type,
                 TransactionDate = dto.Date
             };
 
-            var addTransaction = await _repo.AddTransaction(mapTransaction);
+            transaction.MarkCreated();
 
-            return new TransactionResponseDto
-            {
-                Amount = addTransaction.TransactionAmount,
-                Type = addTransaction.TransactionType,
-                Date = addTransaction.TransactionDate,
-            };
-        }
+            await _repo.AddAsync(transaction);
 
-        public async Task<IEnumerable<TransactionResponseDto>> GetAllTransactions(string userId)
-        {
-            var transactions = await _repo.GetAllTransactions(userId);
-
-            return transactions.Select(t => new TransactionResponseDto
-            {
-                Amount = t.TransactionAmount,
-                Type = t.TransactionType,
-                Date = t.TransactionDate
-            });
+            return MapToDto(transaction);
         }
 
         public async Task<TransactionResponseDto> GetTransactionById(string userId, int transactionId)
         {
-            var transaction = await _repo.GetTransactionById(userId, transactionId);
+            var transaction = await _repo.GetByIdAsync(userId, transactionId);
 
+            if (transaction == null)
+                throw new KeyNotFoundException("Transaction not found");
+
+            return MapToDto(transaction);
+        }
+
+        public async Task<List<TransactionResponseDto>> GetAllTransactions(string userId)
+        {
+            var transactions = await _repo.GetAllAsync(userId);
+            return transactions.Select(MapToDto).ToList();
+        }
+
+        public async Task<List<TransactionResponseDto>> GetTransactionsByMonth(string userId, int year, int month)
+        {
+            var transactions = await _repo.GetByMonthAsync(userId, year, month);
+            return transactions.Select(MapToDto).ToList();
+        }
+
+        public async Task<TransactionResponseDto> UpdateTransaction(string userId, int transactionId, UpdateTransactionDto dto)
+        {
+            var transaction = await _repo.GetByIdAsync(userId, transactionId);
+
+            if (transaction == null)
+                throw new KeyNotFoundException("Transaction not found");
+
+            transaction.TransactionAmount = dto.Amount;
+            transaction.TransactionType = dto.Type;
+            transaction.TransactionDate = dto.Date;
+            transaction.MarkUpdated();
+
+            await _repo.SaveChangesAsync();
+
+            return MapToDto(transaction);
+        }
+
+        public async Task<TransactionResponseDto> DeleteTransaction(string userId, int transactionId)
+        {
+            var transaction = await _repo.GetByIdAsync(userId, transactionId);
+
+            if (transaction == null)
+                throw new KeyNotFoundException("Transaction not found");
+
+            transaction.SoftDelete();
+            transaction.MarkUpdated();
+
+            await _repo.SaveChangesAsync();
+
+            return MapToDto(transaction);
+        }
+
+        private static TransactionResponseDto MapToDto(Transaction transaction)
+        {
             return new TransactionResponseDto
             {
                 Amount = transaction.TransactionAmount,
                 Type = transaction.TransactionType,
                 Date = transaction.TransactionDate
-            };
-        }
-
-        public async Task<IEnumerable<TransactionResponseDto>> GetTransactionByMonth(string userId, int year, int month)
-        {
-            var getTransaction = await _repo.GetTransactionByMonth(userId, year, month);
-
-            return getTransaction.Select(t => new TransactionResponseDto
-            {
-                Amount = t.TransactionAmount,
-                Type = t.TransactionType,
-                Date = t.TransactionDate
-            });
-        }
-
-        public async Task<TransactionResponseDto> UpdateTransaction(string userId, int transactionId, UpdateTransactionDto dto)
-        {
-            var updateTransaction = await _repo.UpdateTransaction(userId, transactionId, dto);
-
-            return new TransactionResponseDto
-            {
-                Amount = updateTransaction.TransactionAmount,
-                Type = updateTransaction.TransactionType,
-                Date = updateTransaction.TransactionDate
-            };
-        }
-
-        public async Task<TransactionResponseDto> DeleteTransaction(string userId, int transactionId)
-        {
-            var deleteTransaction = await _repo.DeleteTransaction(userId, transactionId);
-
-            return new TransactionResponseDto
-            {
-                Amount = deleteTransaction.TransactionAmount,
-                Type = deleteTransaction.TransactionType,
-                Date = deleteTransaction.TransactionDate
             };
         }
     }

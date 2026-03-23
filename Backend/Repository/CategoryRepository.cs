@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SpendWise.Data;
-using SpendWise.DTO.Category;
 using SpendWise.Models;
 
 namespace SpendWise.Repository
@@ -14,64 +13,31 @@ namespace SpendWise.Repository
             _context = context;
         }
 
-        public async Task<Category> AddCategory(Category category)
+        public async Task AddAsync(Category category)
         {
-            category.MarkCreated();
-
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
-
-            return category;
         }
 
-        public async Task<Category> UpdateCategory(string userId, int categoryId, UpdateCategoryDto dto)
+        public async Task<Category?> GetByIdAsync(string userId, int categoryId)
         {
-            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId && c.UserId == userId);
-            if (category == null)
-            {
-                throw new Exception("Category does not exist");
-            }
+            return await _context.Categories
+                .FirstOrDefaultAsync(c =>
+                    c.Id == categoryId &&
+                    c.UserId == userId);
+        }
 
-            category.CategoryType = dto.CategoryType;
-            category.CategoryName = dto.CategoryName;
+        public async Task<List<Category>> GetAllAsync(string userId)
+        {
+            return await _context.Categories
+                .Where(c => c.UserId == userId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
 
-            category.MarkUpdated();
-
+        public async Task SaveChangesAsync()
+        {
             await _context.SaveChangesAsync();
-            return category;
-        }
-
-        public async Task<IEnumerable<Category>> GetAllCategories(string userId)
-        {
-            return await _context.Categories.Where(c => c.UserId == userId && !c.IsDeleted).ToListAsync();
-        }
-
-        public async Task<Category> GetCategoryById(string userId, int categoryId)
-        {
-            var category = await _context.Categories.FirstOrDefaultAsync(c => 
-                                                        c.UserId == userId && c.Id == categoryId 
-                                                        && !c.IsDeleted);
-            if (category == null)
-            {
-                throw new Exception("Category not found");
-            }
-
-            return category;
-        }
-
-        public async Task<Category> DeleteCategory(string userId, int categoryId)
-        {
-            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId && c.UserId == userId && !c.IsDeleted);
-
-            if (category == null)
-            {
-                throw new Exception("Category does not exist");
-            }
-
-            category.SoftDelete();
-
-            await _context.SaveChangesAsync();
-            return category;
         }
     }
 }

@@ -4,7 +4,7 @@ namespace SpendWise.Models
 {
     public class User : IdentityUser
     {
-        public bool IsDelete { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
@@ -26,7 +26,7 @@ namespace SpendWise.Models
 
         public void SoftDelete()
         {
-            IsDelete = true;
+            IsDeleted = true;
             UpdatedAt = DateTime.UtcNow;
         }
     }

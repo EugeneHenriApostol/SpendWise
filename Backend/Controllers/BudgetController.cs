@@ -18,7 +18,7 @@ namespace SpendWise.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBudget([FromBody]CreateBudgetDto dto)
+        public async Task<IActionResult> AddBudget(CreateBudgetDto dto)
         {
 
             var result = await _service.AddBudget(UserId, dto);

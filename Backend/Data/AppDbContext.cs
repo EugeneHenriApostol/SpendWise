@@ -19,6 +19,15 @@ namespace SpendWise.Data
         {
             base.OnModelCreating(builder);
 
+            // global soft delete filter
+            builder.Entity<Budget>().HasQueryFilter(b => !b.IsDeleted);
+            builder.Entity<Category>().HasQueryFilter(c => !c.IsDeleted);
+            builder.Entity<Transaction>().HasQueryFilter(t => !t.IsDeleted);
+            builder.Entity<SavingsGoal>().HasQueryFilter(s => !s.IsDeleted);
+            builder.Entity<SavingsContribution>().HasQueryFilter(sc => !sc.IsDeleted);
+
+
+            // entity relationships
             builder.Entity<Transaction>()
                 .HasOne(t => t.User)
                 .WithMany(t => t.Transactions)

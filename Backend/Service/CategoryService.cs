@@ -1,6 +1,6 @@
-﻿using SpendWise.DTO.Category;
+﻿using SpendWise.Repository;
 using SpendWise.Models;
-using SpendWise.Repository;
+using SpendWise.DTO.Category;
 
 namespace SpendWise.Service
 {
@@ -15,69 +15,75 @@ namespace SpendWise.Service
 
         public async Task<CategoryResponseDto> AddCategory(string userId, CreateCategoryDto dto)
         {
-            var existing = await _categoryRepo.GetCategoryById(userId, dto.Id);
-
-            if (existing != null)
-            {
-                throw new KeyNotFoundException("This category already exists");
-            }
-
             var category = new Category
             {
-                CategoryName = dto.Name,
-                CategoryType = dto.Type
+                UserId = userId,
+                CategoryName = dto.CategoryName,
+                CategoryType = dto.CategoryType
             };
- 
-            var newCategory = await _categoryRepo.AddCategory(category);
 
-            return new CategoryResponseDto
-            {
-                Type = newCategory.CategoryType,
-                Name = newCategory.CategoryName
-            };
+            category.MarkCreated();
+
+            await _categoryRepo.AddAsync(category);
+
+            return MapToDto(category);
         }
 
-        public async Task<IEnumerable<CategoryResponseDto>> GetAllCategories(string userId)
+        public async Task<List<CategoryResponseDto>> GetAllCategories(string userId)
         {
-            var categories = await _categoryRepo.GetAllCategories(userId);
+            var categories = await _categoryRepo.GetAllAsync(userId);
 
-            return categories.Select(c => new CategoryResponseDto
-            {
-                Type = c.CategoryType,
-                Name = c.CategoryName
-            });
+            return categories.Select(MapToDto).ToList();
         }
 
         public async Task<CategoryResponseDto> GetCategoryById(string userId, int categoryId)
         {
-            var category = await _categoryRepo.GetCategoryById(userId, categoryId);
+            var category = await _categoryRepo.GetByIdAsync(userId, categoryId);
 
-            return new CategoryResponseDto
-            {
-                Type = category.CategoryType,
-                Name = category.CategoryName
-            };
+            if (category == null)
+                throw new KeyNotFoundException("Category not found");
+
+            return MapToDto(category);
         }
 
         public async Task<CategoryResponseDto> UpdateCategory(string userId, int categoryId, UpdateCategoryDto dto)
         {
-            var updateCategory = await _categoryRepo.UpdateCategory(userId, categoryId, dto);
+            var category = await _categoryRepo.GetByIdAsync(userId, categoryId);
 
-            return new CategoryResponseDto
-            {
-                Type = updateCategory.CategoryType,
-                Name = updateCategory.CategoryName,
-            };
+            if (category == null)
+                throw new KeyNotFoundException("Category not found");
+
+            category.CategoryName = dto.CategoryName;
+            category.CategoryType = dto.CategoryType;
+            category.MarkUpdated();
+
+            await _categoryRepo.SaveChangesAsync();
+
+            return MapToDto(category);
         }
 
         public async Task<CategoryResponseDto> DeleteCategory(string userId, int categoryId)
         {
-            var deleteCategory = await _categoryRepo.DeleteCategory(userId, categoryId);
+            var category = await _categoryRepo.GetByIdAsync(userId, categoryId);
 
+            if (category == null)
+                throw new KeyNotFoundException("Category not found");
+
+            category.SoftDelete();
+            category.MarkUpdated();
+
+            await _categoryRepo.SaveChangesAsync();
+
+            return MapToDto(category);
+        }
+
+        private static CategoryResponseDto MapToDto(Category category)
+        {
             return new CategoryResponseDto
             {
-                Type = deleteCategory.CategoryType,
-                Name = deleteCategory.CategoryName
+                Id = category.Id,
+                CategoryName = category.CategoryName,
+                CategoryType = category.CategoryType
             };
         }
     }

@@ -52,10 +52,10 @@ builder.Services.AddScoped<TransactionRepository>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -96,7 +96,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         {
             new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-            {
+            {   
                 Reference = new Microsoft.OpenApi.Models.OpenApiReference
                 {
                     Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,

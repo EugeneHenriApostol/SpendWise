@@ -15,73 +15,74 @@ namespace SpendWise.Service
 
         public async Task<BudgetResponseDto> AddBudget(string userId, CreateBudgetDto dto)
         {
-            var existing = await _budgetRepo.GetBudget(userId, dto.Month, dto.Year);
+            var existing = await _budgetRepo.GetByMonthAsync(userId, dto.Month, dto.Year);
 
             if (existing != null)
-            {
-                throw new KeyNotFoundException("Budget already exists for this month");
-            }
+                throw new InvalidOperationException("Budget already exists for this month");
 
             var budget = new Budget
             {
-                UserId = userId,
-                BudgetAmount = dto.Amount,
-                Month = dto.Month,
-                Year = dto.Year,
+                UserId = userId
             };
 
-            budget = await _budgetRepo.AddBudget(budget);
+            budget.SetAmount(dto.Amount);
+            budget.SetPeriod(dto.Month, dto.Year);
+            budget.MarkCreated();
 
-            return new BudgetResponseDto
-            {
-                Id = budget.Id,
-                Amount = budget.BudgetAmount,
-                Month = budget.Month,
-                Year = budget.Year,
-            };
+            await _budgetRepo.AddAsync(budget);
+
+            return MapToDto(budget);
         }
 
         public async Task<BudgetResponseDto> GetBudget(string userId, int month, int year)
         {
-            var budget = await _budgetRepo.GetBudget(userId, month, year);
+            var budget = await _budgetRepo.GetByMonthAsync(userId, month, year);
 
             if (budget == null)
-            {
-                throw new KeyNotFoundException("Budget Not Found");
-            }
+                throw new KeyNotFoundException("Budget not found");
 
+            return MapToDto(budget);
+        }
+
+        public async Task<BudgetResponseDto> UpdateBudget(string userId, int budgetId, UpdateBudgetDto dto)
+        {
+            var budget = await _budgetRepo.GetByIdAsync(userId, budgetId);
+
+            if (budget == null)
+                throw new KeyNotFoundException("Budget not found");
+
+            budget.SetAmount(dto.BudgetAmount);
+            budget.SetPeriod(dto.Month, dto.Year);
+            budget.MarkUpdated();
+
+            await _budgetRepo.SaveChangesAsync();
+
+            return MapToDto(budget);
+        }
+
+        public async Task<BudgetResponseDto> DeleteBudget(string userId, int budgetId)
+        {
+            var budget = await _budgetRepo.GetByIdAsync(userId, budgetId);
+
+            if (budget == null)
+                throw new KeyNotFoundException("Budget not found");
+
+            budget.SoftDelete();
+            budget.MarkUpdated();
+
+            await _budgetRepo.SaveChangesAsync();
+
+            return MapToDto(budget);
+        }
+
+        private static BudgetResponseDto MapToDto(Budget budget)
+        {
             return new BudgetResponseDto
             {
                 Id = budget.Id,
                 Amount = budget.BudgetAmount,
                 Month = budget.Month,
                 Year = budget.Year,
-            };
-        }
-
-        public async Task<BudgetResponseDto> UpdateBudget(string userId, int budgetId, UpdateBudgetDto dto)
-        {
-            var updateBudget = await _budgetRepo.UpdateBudget(userId, budgetId, dto);
-
-            return new BudgetResponseDto
-            {
-                Id = updateBudget.Id,
-                Amount = updateBudget.BudgetAmount,
-                Month = updateBudget.Month,
-                Year = updateBudget.Year,
-            };
-        }
-
-        public async Task<BudgetResponseDto> DeleteBudget(string userId, int budgetId)
-        {
-            var deleteBudget = await _budgetRepo.DeleteBudget(userId, budgetId);
-
-            return new BudgetResponseDto
-            {
-                Id = deleteBudget.Id,
-                Amount = deleteBudget.BudgetAmount,
-                Month = deleteBudget.Month,
-                Year = deleteBudget.Year,
             };
         }
     }

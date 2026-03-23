@@ -35,7 +35,7 @@ namespace SpendWise.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id: int}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetTransactionById(int id)
         {
             var result = await _service.GetTransactionById(UserId, id);
@@ -43,7 +43,7 @@ namespace SpendWise.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{month}")]
+        [HttpGet("month/{month:int}")]
         public async Task<IActionResult> GetTransactionByMonth(int id, int month)
         {
             var result = await _service.GetTransactionByMonth(UserId, id, month);
@@ -59,6 +59,7 @@ namespace SpendWise.Controllers
             return Ok(result);
         }
 
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransaction(int id)
         {
             var result = await _service.DeleteTransaction(UserId, id);

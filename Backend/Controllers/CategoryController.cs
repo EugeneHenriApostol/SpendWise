@@ -45,7 +45,7 @@ namespace SpendWise.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryDto dto)
         {
             var result = await _service.UpdateCategory(UserId, id, dto);
@@ -53,7 +53,7 @@ namespace SpendWise.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var result = await _service.DeleteCategory(UserId, id);
