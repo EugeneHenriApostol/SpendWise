@@ -20,9 +20,9 @@ namespace SpendWise.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddTransaction(CreateTransactionDto dto)
+        public async Task<IActionResult> AddTransaction(string userId,CreateTransactionDto dto)
         {
-            var result = await _service.AddTransaction(dto);
+            var result = await _service.AddTransaction(userId, dto);
 
             return Ok(result);
         }
@@ -39,14 +39,6 @@ namespace SpendWise.Controllers
         public async Task<IActionResult> GetTransactionById(int id)
         {
             var result = await _service.GetTransactionById(UserId, id);
-
-            return Ok(result);
-        }
-
-        [HttpGet("month/{month:int}")]
-        public async Task<IActionResult> GetTransactionByMonth(int id, int month)
-        {
-            var result = await _service.GetTransactionByMonth(UserId, id, month);
 
             return Ok(result);
         }

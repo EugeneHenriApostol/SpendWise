@@ -12,8 +12,8 @@ using SpendWise.Data;
 namespace SpendWise.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260202012911_database models")]
-    partial class Databasemodels
+    [Migration("20260324071250_allModels")]
+    partial class allModels
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -173,13 +173,13 @@ namespace SpendWise.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Months")
+                    b.Property<int>("Month")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -218,7 +218,7 @@ namespace SpendWise.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
@@ -256,7 +256,7 @@ namespace SpendWise.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
@@ -290,7 +290,7 @@ namespace SpendWise.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCompleted")
@@ -313,7 +313,13 @@ namespace SpendWise.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("SavingsGoals");
                 });
@@ -332,7 +338,7 @@ namespace SpendWise.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedAt")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
@@ -341,6 +347,9 @@ namespace SpendWise.Migrations
                     b.Property<decimal>("TransactionAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("TransactionType")
                         .IsRequired()
@@ -384,7 +393,7 @@ namespace SpendWise.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDelete")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -518,6 +527,17 @@ namespace SpendWise.Migrations
                         .IsRequired();
 
                     b.Navigation("SavingsGoal");
+                });
+
+            modelBuilder.Entity("SpendWise.Models.SavingsGoal", b =>
+                {
+                    b.HasOne("SpendWise.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SpendWise.Models.Transaction", b =>

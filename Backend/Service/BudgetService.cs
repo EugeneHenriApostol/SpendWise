@@ -34,22 +34,22 @@ namespace SpendWise.Service
             return MapToDto(budget);
         }
 
-        public async Task<BudgetResponseDto> GetBudget(string userId, int month, int year)
+        public async Task<BudgetResponseDto?> GetBudget(string userId, int month, int year)
         {
             var budget = await _budgetRepo.GetByMonthAsync(userId, month, year);
 
             if (budget == null)
-                throw new KeyNotFoundException("Budget not found");
+                return null;
 
             return MapToDto(budget);
         }
 
-        public async Task<BudgetResponseDto> UpdateBudget(string userId, int budgetId, UpdateBudgetDto dto)
+        public async Task<BudgetResponseDto?> UpdateBudget(string userId, int budgetId, UpdateBudgetDto dto)
         {
             var budget = await _budgetRepo.GetByIdAsync(userId, budgetId);
 
             if (budget == null)
-                throw new KeyNotFoundException("Budget not found");
+                return null;
 
             budget.SetAmount(dto.BudgetAmount);
             budget.SetPeriod(dto.Month, dto.Year);
@@ -60,12 +60,12 @@ namespace SpendWise.Service
             return MapToDto(budget);
         }
 
-        public async Task<BudgetResponseDto> DeleteBudget(string userId, int budgetId)
+        public async Task<BudgetResponseDto?> DeleteBudget(string userId, int budgetId)
         {
             var budget = await _budgetRepo.GetByIdAsync(userId, budgetId);
 
             if (budget == null)
-                throw new KeyNotFoundException("Budget not found");
+                return null;
 
             budget.SoftDelete();
             budget.MarkUpdated();

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SpendWise.Migrations
 {
     /// <inheritdoc />
-    public partial class databasemodels : Migration
+    public partial class Databasemodels : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

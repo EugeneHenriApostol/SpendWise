@@ -20,17 +20,23 @@ namespace SpendWise.Controllers
         [HttpPost]
         public async Task<IActionResult> AddBudget(CreateBudgetDto dto)
         {
-
-            var result = await _service.AddBudget(UserId, dto);
-
-            return Ok(result);
+            try
+            {
+                var result = await _service.AddBudget(UserId, dto);
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
         [HttpGet("{month}/{year}")]
         public async Task<IActionResult> GetBudget(int month, int year)
         {
-
             var result = await _service.GetBudget(UserId, month, year);
+            if (result == null)
+                return NotFound(new { message = $"No budget set for {month}/{year}" });
 
             return Ok(result);
         }

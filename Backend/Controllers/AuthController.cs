@@ -20,11 +20,8 @@ namespace SpendWise.Controllers
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var result = await _authService.Login(dto);
-
             if (!result.Success)
-            {
-                return BadRequest(result.ErrorMessage);
-            }
+                return BadRequest(new { success = false, errorMessage = result.ErrorMessage, user = (object?)null });
 
             return Ok(result);
         }
@@ -33,11 +30,8 @@ namespace SpendWise.Controllers
         public async Task<IActionResult> SignUp(SignUpDto dto)
         {
             var result = await _authService.SignUp(dto);
-
             if (!result.Success)
-            {
-                return BadRequest(result.ErrorMessage);
-            }
+                return BadRequest(new { success = false, errorMessage = result.ErrorMessage, user = (object?)null });
 
             return Ok(result);
         }
