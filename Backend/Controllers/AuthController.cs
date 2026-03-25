@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿//AuthController.cs
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpendWise.DTO.Authentication;
 using SpendWise.Service;

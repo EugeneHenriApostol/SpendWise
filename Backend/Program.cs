@@ -1,3 +1,4 @@
+//program.cs
 using Microsoft.EntityFrameworkCore;
 using SpendWise.Data;
 using Microsoft.AspNetCore.Identity;
@@ -56,11 +57,13 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<BudgetService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<TransactionService>();
+builder.Services.AddScoped<SavingsService>();
 
 // dependency injection - repo
 builder.Services.AddScoped<BudgetRepository>();
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<TransactionRepository>();
+builder.Services.AddScoped<SavingsRepository>();
 
 
 builder.Services.AddAuthorization();

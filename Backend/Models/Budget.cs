@@ -1,4 +1,5 @@
-﻿namespace SpendWise.Models
+﻿//BudgetModel.cs
+namespace SpendWise.Models
 {
     public class Budget : BaseEntity
     {

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//BudgetRepository.cs
+using Microsoft.EntityFrameworkCore;
 using SpendWise.Data;
 using SpendWise.Models;
 
@@ -36,6 +37,17 @@ namespace SpendWise.Repository
                     b.Month == month &&
                     b.Year == year);
         }
+
+        public async Task<List<Budget>> GetAllAsync(string userId)
+        {
+            return await _context.Budgets
+                .Where(b => b.UserId == userId)
+                .OrderByDescending(b => b.Year)
+                .ThenByDescending(b => b.Month)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
 
         public async Task SaveChangesAsync()
         {

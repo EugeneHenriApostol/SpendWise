@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿//BudgetController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpendWise.DTO.Budget;
@@ -8,6 +9,8 @@ using System.Security.Claims;
 namespace SpendWise.Controllers
 {
     [Authorize]
+    [Route("api/[controller]")]
+    [ApiController]
     public class BudgetController : BaseController
     {
         private readonly BudgetService _service;
@@ -48,6 +51,14 @@ namespace SpendWise.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllBudgets()
+        {
+            var result = await _service.GetAllBudgets(UserId);
+            return Ok(result);
+        }
+
 
         [HttpDelete("{budgetId}")]
         public async Task<IActionResult> DeleteBudget(int budgetId)

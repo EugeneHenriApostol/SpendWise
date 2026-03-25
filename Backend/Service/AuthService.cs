@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿//AuthService.cs
+using Microsoft.AspNetCore.Identity;
 using SpendWise.Models;
 using SpendWise.DTO.Authentication;
 using Microsoft.IdentityModel.JsonWebTokens;

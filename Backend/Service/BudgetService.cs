@@ -1,4 +1,5 @@
-﻿using SpendWise.Repository;
+﻿//BudgetService.cs
+using SpendWise.Repository;
 using SpendWise.Models;
 using SpendWise.DTO.Budget;
 
@@ -42,6 +43,12 @@ namespace SpendWise.Service
                 return null;
 
             return MapToDto(budget);
+        }
+
+        public async Task<List<BudgetResponseDto>> GetAllBudgets(string userId)
+        {
+            var budgets = await _budgetRepo.GetAllAsync(userId);
+            return budgets.Select(MapToDto).ToList();
         }
 
         public async Task<BudgetResponseDto?> UpdateBudget(string userId, int budgetId, UpdateBudgetDto dto)
