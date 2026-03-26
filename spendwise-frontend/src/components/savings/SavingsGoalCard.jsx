@@ -1,3 +1,4 @@
+//SavingsGoalCard.jsx
 import { FiEdit2, FiTrash2, FiPlus, FiTarget, FiCalendar, FiTrendingUp } from "react-icons/fi";
 
 export default function SavingsGoalCard({ goal, onEdit, onDelete, onAddContribution }) {

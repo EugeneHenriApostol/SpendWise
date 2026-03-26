@@ -38,6 +38,7 @@ namespace SpendWise.Repository
                     b.Year == year);
         }
 
+        // Get all ACTIVE budgets (soft-deleted excluded)
         public async Task<List<Budget>> GetAllAsync(string userId)
         {
             return await _context.Budgets

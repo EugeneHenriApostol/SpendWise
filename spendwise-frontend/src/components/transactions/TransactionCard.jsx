@@ -1,3 +1,4 @@
+//TransactionCard.jsx
 import { FiEdit2, FiTrash2, FiArrowUpRight, FiArrowDownRight, FiCalendar, FiTag } from "react-icons/fi";
 
 export default function TransactionCard({ transaction, categories, onEdit, onDelete }) {

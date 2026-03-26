@@ -1,3 +1,4 @@
+//ContributionModal.jsx
 import { useState, useEffect } from "react";
 import { FiX } from "react-icons/fi";
 
@@ -26,6 +27,7 @@ export default function ContributionModal({ isOpen, onClose, onSubmit, goalName 
         throw new Error("Please enter a valid amount greater than 0");
       }
 
+      // Send as object with amount property
       await onSubmit(contributionAmount);
       onClose();
     } catch (err) {

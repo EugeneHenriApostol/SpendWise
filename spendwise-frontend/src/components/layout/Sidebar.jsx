@@ -12,6 +12,7 @@ import {
   FiMenu,
   FiX
 } from "react-icons/fi";
+import logo from "../../assets/logo.png";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: FiHome },
@@ -36,8 +37,8 @@ export default function Sidebar({ mobileOpen, setMobileOpen }) {
       {/* Logo */}
       <div className="flex items-center justify-between px-6 py-8 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-            <span className="text-white font-bold text-xl">S</span>
+          <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
+            <span className="text-white font-bold text-xl">₱</span>
           </div>
           <h1 className="text-white font-bold text-xl tracking-tight">SpendWise</h1>
         </div>

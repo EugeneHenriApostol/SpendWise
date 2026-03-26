@@ -38,10 +38,14 @@ namespace SpendWise.Controllers
         public async Task<IActionResult> GetBudget(int month, int year)
         {
             var result = await _service.GetBudget(UserId, month, year);
-            if (result == null)
-                return NotFound(new { message = $"No budget set for {month}/{year}" });
 
-            return Ok(result);
+            // Always return a JSON object, never empty response
+            if (result == null)
+            {
+                return Ok(new { exists = false, budget = (object?)null });
+            }
+
+            return Ok(new { exists = true, budget = result });
         }
 
         [HttpPut("{budgetId}")]

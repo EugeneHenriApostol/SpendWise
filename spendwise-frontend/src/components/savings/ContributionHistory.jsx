@@ -1,3 +1,4 @@
+//ContributionHistory.jsx
 import { FiDollarSign, FiCalendar } from "react-icons/fi";
 
 export default function ContributionHistory({ contributions, onClose }) {

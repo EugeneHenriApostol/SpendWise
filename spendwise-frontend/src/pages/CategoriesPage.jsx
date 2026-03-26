@@ -1,3 +1,5 @@
+//CategoriesPage.jsx
+
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { categoryService } from "../services/categoryService";

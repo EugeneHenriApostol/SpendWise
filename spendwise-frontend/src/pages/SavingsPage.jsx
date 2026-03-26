@@ -1,3 +1,4 @@
+//SavingsPage.jsx
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { savingsService } from "../services/savingsService";
@@ -81,7 +82,8 @@ export default function SavingsPage() {
 
   const handleAddContribution = async (amount) => {
     try {
-      await savingsService.addContribution(selectedGoal.id, { amount }, token);
+      // Make sure we're sending an object with amount property
+      await savingsService.addContribution(selectedGoal.id, { amount: amount }, token);
       await fetchGoals();
       if (isHistoryModalOpen) {
         await fetchContributions(selectedGoal.id);
@@ -90,7 +92,7 @@ export default function SavingsPage() {
       console.error("Failed to add contribution:", err);
       throw err;
     }
-  };
+  }
 
   const handleOpenCreateModal = () => {
     setModalMode("create");

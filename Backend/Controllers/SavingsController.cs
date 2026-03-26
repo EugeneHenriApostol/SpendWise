@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿//SavingsController.cs
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpendWise.DTO.Savings;
 using SpendWise.Service;
@@ -60,9 +61,9 @@ namespace SpendWise.Controllers
 
         // contribution
         [HttpPost("{id}/contribution")]
-        public async Task<IActionResult> AddContribution(string userId, int id, AddContributionDto dto)
+        public async Task<IActionResult> AddContribution(int id, AddContributionDto dto)
         {
-            var result = await _service.AddContribution(userId, id, dto);
+            var result = await _service.AddContribution(UserId, id, dto);
 
             return Ok(result);
         }

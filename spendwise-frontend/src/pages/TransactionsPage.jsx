@@ -1,3 +1,4 @@
+//TransactionsPage.jsx
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { transactionService } from "../services/transactionService";
@@ -122,6 +123,8 @@ export default function TransactionsPage() {
     try {
       await transactionService.createTransaction(data, token);
       await fetchData();
+      // refresh dashboard data if needed
+      window.dispatchEvent(new Event('focus'));
     } catch (err) {
       console.error("Failed to create transaction:", err);
       throw err;

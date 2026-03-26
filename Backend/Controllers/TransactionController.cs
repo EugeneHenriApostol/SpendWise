@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿//TransactionController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpendWise.DTO.Transaction;
@@ -20,9 +21,9 @@ namespace SpendWise.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddTransaction(string userId,CreateTransactionDto dto)
+        public async Task<IActionResult> AddTransaction(CreateTransactionDto dto)
         {
-            var result = await _service.AddTransaction(userId, dto);
+            var result = await _service.AddTransaction(UserId, dto);
 
             return Ok(result);
         }

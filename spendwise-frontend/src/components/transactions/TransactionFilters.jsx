@@ -1,4 +1,5 @@
-import { useState } from "react"; // Add this import
+//TransactionFilters.jsx
+import { useState } from "react";
 import { FiSearch, FiCalendar, FiFilter, FiX } from "react-icons/fi";
 
 export default function TransactionFilters({ 

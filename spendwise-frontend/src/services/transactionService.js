@@ -1,6 +1,5 @@
+//transactionService.js
 import { api } from "./api";
-
-const API_BASE = "http://localhost:5079/api";
 
 export const transactionService = {
   // Get all transactions
@@ -23,16 +22,8 @@ export const transactionService = {
     return api.put(`/transaction/${id}`, data, token);
   },
 
-  // Delete transaction
+  // Delete transaction - Use api.delete
   async deleteTransaction(id, token) {
-    const res = await fetch(`${API_BASE}/transaction/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    if (!res.ok) throw new Error(`API Error: ${res.status}`);
-    return res.json();
+    return api.delete(`/transaction/${id}`, token);
   },
 };

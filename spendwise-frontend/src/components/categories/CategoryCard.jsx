@@ -1,3 +1,4 @@
+// CategoryCard.jsx
 import { FiEdit2, FiTrash2, FiTrendingUp, FiTrendingDown } from "react-icons/fi";
 
 export default function CategoryCard({ category, onEdit, onDelete, transactionCount = 0 }) {

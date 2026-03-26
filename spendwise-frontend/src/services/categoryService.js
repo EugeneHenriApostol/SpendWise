@@ -21,16 +21,8 @@ export const categoryService = {
     return api.put(`/category/${id}`, data, token);
   },
 
-  // Delete category
+  // Delete category - Use the api service instead of direct fetch
   async deleteCategory(id, token) {
-    const res = await fetch(`${API_BASE}/category/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    if (!res.ok) throw new Error(`API Error: ${res.status}`);
-    return res.json();
+    return api.delete(`/category/${id}`, token);
   },
 };

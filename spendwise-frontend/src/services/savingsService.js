@@ -1,6 +1,5 @@
+//savingsService.js
 import { api } from "./api";
-
-const API_BASE = "http://localhost:5079/api";
 
 export const savingsService = {
   // Get all savings goals
@@ -23,17 +22,9 @@ export const savingsService = {
     return api.put(`/savings/${id}`, data, token);
   },
 
-  // Delete savings goal
+  // Delete savings goal - Use api.delete
   async deleteGoal(id, token) {
-    const res = await fetch(`${API_BASE}/savings/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    if (!res.ok) throw new Error(`API Error: ${res.status}`);
-    return res.json();
+    return api.delete(`/savings/${id}`, token);
   },
 
   // Add contribution to goal

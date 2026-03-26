@@ -9,7 +9,7 @@ export const setLogoutCallback = (callback) => {
 };
 
 export const api = {
-  async get(endpoint, token) {
+  async get(endpoint, token, options = {}) {
     const res = await fetch(`${API_BASE}${endpoint}`, {
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -22,6 +22,12 @@ export const api = {
         logoutCallback();
       }
       throw new Error("Session expired. Please login again.");
+    }
+    
+    // For budget endpoints, 200 with null is valid, so don't throw
+    if (endpoint.startsWith("/budget") && res.status === 200) {
+      const data = await res.json();
+      return data; // This could be null
     }
     
     if (!res.ok) throw new Error(`API Error: ${res.status}`);
@@ -59,7 +65,6 @@ export const api = {
       body: JSON.stringify(data),
     });
     
-    // Handle unauthorized (server says token expired or invalid)
     if (res.status === 401) {
       if (logoutCallback) {
         logoutCallback();
@@ -80,7 +85,6 @@ export const api = {
       },
     });
     
-    // Handle unauthorized (server says token expired or invalid)
     if (res.status === 401) {
       if (logoutCallback) {
         logoutCallback();
@@ -95,6 +99,21 @@ export const api = {
 
 // Dashboard specific API calls
 export const dashboardService = {
+  async getTransactions(token) {
+    return api.get("/transaction", token);
+  },
+  
+  async getCategories(token) {
+    return api.get("/category", token);
+  },
+  
+  async getBudget(token) {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    return api.get(`/budget/${month}/${year}`, token);
+  },
+
   async getDashboardData(token) {
     const currentDate = new Date();
     const year = currentDate.getFullYear();
@@ -104,8 +123,10 @@ export const dashboardService = {
       const [transactions, categories, budget] = await Promise.all([
         api.get("/transaction", token),
         api.get("/category", token),
-        api.get(`/budget/${month}/${year}`, token).catch(() => null),
+        api.get(`/budget/${month}/${year}`, token),
       ]);
+
+      console.log("Dashboard data fetched:", { transactions, categories, budget });
 
       return { transactions, categories, budget, currentMonth: month, currentYear: year };
     } catch (error) {

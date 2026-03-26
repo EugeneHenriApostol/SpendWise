@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { dashboardService } from "../../services/api";
+import { budgetService } from "../../services/budgetService";
 import SummaryCards from "./SummaryCards";
 import RecentTransactions from "./RecentTransactions";
 import ExpenseChart from "./ExpenseChart";
@@ -31,19 +32,41 @@ export default function DashboardPage() {
     fetchDashboardData();
   }, []);
 
+  // Refresh data when window gains focus (after adding transaction from another page)
   useEffect(() => {
-    if (data.transactions.length > 0) {
-      calculateStats();
-      calculateExpensesByCategory();
-    }
-  }, [data.transactions, data.budget]);
+    const handleFocus = () => {
+      fetchDashboardData();
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
       setError(null);
-      const result = await dashboardService.getDashboardData(token);
-      setData(result);
+      
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear();
+      
+      // Fetch all data in parallel
+      const [transactions, categories, budget] = await Promise.all([
+        dashboardService.getTransactions(token),
+        dashboardService.getCategories(token),
+        budgetService.getBudget(currentMonth, currentYear, token), // Explicitly fetch budget
+      ]);
+      
+      console.log("Dashboard data:", { transactions, categories, budget }); // Debug log
+      
+      setData({
+        transactions,
+        categories,
+        budget,
+        currentMonth,
+        currentYear,
+      });
+      
     } catch (err) {
       console.error("Failed to fetch dashboard data:", err);
       setError("Failed to load dashboard data. Please try again.");
@@ -69,10 +92,17 @@ export default function DashboardPage() {
 
     const netBalance = totalIncome - totalExpenses;
     
+    // Calculate budget remaining
     let budgetRemaining = null;
     if (data.budget && data.budget.amount) {
       budgetRemaining = data.budget.amount - totalExpenses;
     }
+
+    console.log("Budget calculation:", { 
+      budgetAmount: data.budget?.amount, 
+      totalExpenses, 
+      budgetRemaining 
+    }); // Debug log
 
     setStats({ totalIncome, totalExpenses, netBalance, budgetRemaining });
   };
@@ -86,8 +116,21 @@ export default function DashboardPage() {
     });
 
     const categoryMap = new Map();
+    
     currentMonthExpenses.forEach((tx) => {
-      const categoryName = tx.category?.categoryName || "Uncategorized";
+      let categoryName = "Uncategorized";
+      
+      if (tx.category) {
+        categoryName = tx.category.categoryName || "Uncategorized";
+      } else if (tx.categoryId) {
+        const foundCategory = data.categories.find(c => c.id === tx.categoryId);
+        if (foundCategory) {
+          categoryName = foundCategory.categoryName;
+        }
+      } else if (tx.categoryName) {
+        categoryName = tx.categoryName;
+      }
+      
       categoryMap.set(categoryName, (categoryMap.get(categoryName) || 0) + tx.amount);
     });
 
@@ -98,6 +141,14 @@ export default function DashboardPage() {
 
     setExpensesByCategory(chartData);
   };
+
+  // Recalculate when data changes
+  useEffect(() => {
+    if (data.transactions.length > 0 || data.budget) {
+      calculateStats();
+      calculateExpensesByCategory();
+    }
+  }, [data.transactions, data.budget, data.categories]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -120,7 +171,6 @@ export default function DashboardPage() {
   }
 
   const handleAddTransaction = () => {
-    // This will be implemented when we build the transaction modal
     alert("Add transaction modal coming soon!");
   };
 

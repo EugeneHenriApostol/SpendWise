@@ -1,3 +1,4 @@
+// CategoryStats.jsx
 import { FiPieChart, FiTag, FiTrendingUp, FiTrendingDown } from "react-icons/fi";
 
 export default function CategoryStats({ categories }) {

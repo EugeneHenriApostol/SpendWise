@@ -20,6 +20,8 @@ namespace SpendWise.Service
                 UserId = userId,
                 TransactionAmount = dto.Amount,
                 TransactionType = dto.Type,
+                CategoryId = dto.CategoryId,
+                Description = dto.Description,
                 TransactionDate = dto.Date
             };
 
@@ -61,6 +63,7 @@ namespace SpendWise.Service
 
             transaction.TransactionAmount = dto.Amount;
             transaction.TransactionType = dto.Type;
+            transaction.Description = dto.Description;
             transaction.TransactionDate = dto.Date;
             transaction.MarkUpdated();
 
@@ -88,8 +91,12 @@ namespace SpendWise.Service
         {
             return new TransactionResponseDto
             {
+                Id = transaction.Id,
                 Amount = transaction.TransactionAmount,
                 Type = transaction.TransactionType,
+                CategoryId = transaction.CategoryId,
+                CategoryName = transaction.Category?.CategoryName,
+                Description = transaction.Description,
                 Date = transaction.TransactionDate
             };
         }
