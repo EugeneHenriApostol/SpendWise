@@ -10,6 +10,7 @@ import BudgetsPage from "./pages/BudgetsPage";
 import CategoriesPage from "./pages/CategoriesPage";
 import TransactionsPage from "./pages/TransactionsPage";
 import SavingsPage from "./pages/SavingsPage";
+import AIInsightsPage from "./pages/AIInsightsPage";
 import { useEffect } from "react";
 
 // Protect routes that require auth
@@ -55,6 +56,7 @@ function AppRoutes() {
         <Route path="categories" element={<CategoriesPage />} />
         <Route path="savings" element={<SavingsPage />} />
         <Route path="transactions" element={<TransactionsPage />} />
+        <Route path="ai-insights" element={<AIInsightsPage />} />
       </Route>
       
       <Route path="*" element={<Navigate to="/login" replace />} />

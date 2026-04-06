@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: spendwise-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "YourStrong!Password123"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - spendwise-network
+    restart: unless-stopped
+
+  backend:
+    build: ./Backend
+    container_name: spendwise-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=SpendWiseDb;User Id=sa;Password=YourStrong!Password123;TrustServerCertificate=true;Encrypt=false
+      - AIService__Url=http://ai-service:8000
+      - Jwt__Key=${JWT_KEY}
+    ports:
+      - "5079:80"
+    depends_on:
+      - sqlserver
+      - ai-service
+    networks:
+      - spendwise-network
+    restart: unless-stopped
+
+  ai-service:
+    build: ./AIService
+    container_name: spendwise-ai
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    ports:
+      - "8000:8000"
+    networks:
+      - spendwise-network
+    restart: unless-stopped
+
+  frontend:
+    build: ./spendwise-frontend
+    container_name: spendwise-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - spendwise-network
+    restart: unless-stopped
+
+networks:
+  spendwise-network:
+    driver: bridge
+
+volumes:
+  sqlserver_data:

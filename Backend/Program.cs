@@ -1,13 +1,15 @@
-//program.cs
-using Microsoft.EntityFrameworkCore;
-using SpendWise.Data;
-using Microsoft.AspNetCore.Identity;
-using SpendWise.Models;
+﻿//program.cs
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using SpendWise.Service;
+using SpendWise.Data;
+using SpendWise.Models;
 using SpendWise.Repository;
+using SpendWise.Service;
+using SpendWise.Services;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,8 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddOpenApi();
+builder.Services.AddHealthChecks();
+
 
 // database connection
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -64,6 +68,10 @@ builder.Services.AddScoped<BudgetRepository>();
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<TransactionRepository>();
 builder.Services.AddScoped<SavingsRepository>();
+builder.Services.AddHttpClient<AIClientService>();
+
+//ai
+builder.Services.AddHttpClient<AIClientService>();
 
 
 builder.Services.AddAuthorization();
@@ -126,6 +134,26 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+// automatic database migration
+using(var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        // Create database and apply pending migrations
+        dbContext.Database.Migrate();
+        logger.LogInformation("✅ Database migration completed successfully");
+    }
+    catch (Exception ex)
+    {   
+        logger.LogError(ex, "An error occurred while migrating the database");
+        // App will still start, but database operations will fail
+        // It will retry on next request
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -141,5 +169,15 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// health check
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync("Healthy");
+    }
+});
 
 app.Run();
