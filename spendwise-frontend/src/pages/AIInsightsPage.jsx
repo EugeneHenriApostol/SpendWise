@@ -1,4 +1,4 @@
-import { useState } from 'react';
+// AIInsightsPage.jsx
 import { useAuth } from '../context/AuthContext';
 import AIInsights from '../components/AIInsights';
 import { FiCpu } from 'react-icons/fi';

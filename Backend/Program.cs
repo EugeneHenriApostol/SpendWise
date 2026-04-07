@@ -8,7 +8,6 @@ using SpendWise.Data;
 using SpendWise.Models;
 using SpendWise.Repository;
 using SpendWise.Service;
-using SpendWise.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,10 +67,6 @@ builder.Services.AddScoped<BudgetRepository>();
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<TransactionRepository>();
 builder.Services.AddScoped<SavingsRepository>();
-builder.Services.AddHttpClient<AIClientService>();
-
-//ai
-builder.Services.AddHttpClient<AIClientService>();
 
 
 builder.Services.AddAuthorization();
