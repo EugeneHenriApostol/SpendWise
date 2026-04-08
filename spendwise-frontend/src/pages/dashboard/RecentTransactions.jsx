@@ -27,13 +27,6 @@ export default function RecentTransactions({ transactions, onAddClick }) {
     <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
       <div className="flex items-center justify-between p-5 border-b border-gray-800">
         <h2 className="text-white font-semibold text-lg">Recent Transactions</h2>
-        <button
-          onClick={onAddClick}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#5409DA] to-[#4E71FF] text-white text-sm font-medium hover:opacity-90 transition"
-        >
-          <FiPlus size={16} />
-          Add
-        </button>
       </div>
 
       <div className="divide-y divide-gray-800">

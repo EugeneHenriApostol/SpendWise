@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -22,38 +20,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=SpendWiseDb;User Id=sa;Password=YourStrong!Password123;TrustServerCertificate=true;Encrypt=false
-      - AIService__Url=http://ai-service:8000
       - Jwt__Key=${JWT_KEY}
     ports:
       - "5079:80"
     depends_on:
       - sqlserver
-      - ai-service
-    networks:
-      - spendwise-network
-    restart: unless-stopped
-
-  ollama:
-    image: ollama/ollama:latest
-    container_name: spendwise-ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-    networks:
-      - spendwise-network
-    restart: unless-stopped
-
-  ai-service:
-    build: ./AIService
-    container_name: spendwise-ai
-    environment:
-      - OLLAMA_HOST=http://ollama:11434
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - USE_OLLAMA=true
-    ports:
-      - "8000:8000"
     networks:
       - spendwise-network
     restart: unless-stopped
@@ -69,10 +40,25 @@ services:
       - spendwise-network
     restart: unless-stopped
 
+  # NEW: AI Service (FastAPI + Gemini)
+  ai-service:
+    build: ./ai-service
+    container_name: spendwise-ai
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - API_BASE_URL=http://backend:80
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - backend
+    networks:
+      - spendwise-network
+    restart: unless-stopped
+
 networks:
   spendwise-network:
     driver: bridge
 
 volumes:
   sqlserver_data:
-  ollama_data:
