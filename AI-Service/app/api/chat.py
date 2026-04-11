@@ -30,22 +30,18 @@ async def chat_endpoint(request: ChatRequest):
     4. Gets AI response from Gemini
     5. Returns response to user
     """
-    # Step 1: Validate JWT token
+
     validate_jwt_token(request.jwt_token)
-    
-    # Step 2: Detect question type
+
     question_type = detect_question_type(request.question)
     print(f"Question type detected: {question_type}")
     
-    # Step 3: Fetch user data from ASP.NET Core APIs
     fetcher = DataFetcher(request.jwt_token)
     user_data = await fetcher.fetch_all_data()
-    
-    # Step 4: Build context based on question type
+
     context_builder = ContextBuilder(user_data)
     context = context_builder.build_context(question_type)
-    
-    # Step 5: Generate response using Gemini
+
     ai_response = await gemini_service.generate_response(context, request.question)
     
     # Step 6: Return response

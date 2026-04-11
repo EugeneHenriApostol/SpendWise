@@ -7,8 +7,7 @@ class Config:
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
     API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:5079")
     PORT = int(os.getenv("PORT", 8000))
-    
-    # Question patterns
+
     QUESTION_PATTERNS = {
         "save_money": ["save money", "save more", "reduce spending", "cut costs"],
         "savings_goals": ["savings goal", "save faster", "reach goal", "saving target"],
