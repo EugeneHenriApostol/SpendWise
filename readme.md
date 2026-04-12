@@ -1,50 +1,98 @@
-# 💰 SpendWise - Personal Finance Tracker
+# 💰 SpendWise – AI-Powered Personal Finance Assistant
 
-A full-stack personal finance management application that helps users track income, expenses, budgets, and savings goals. Built with ASP.NET Core and React.
+SpendWise is a full-stack personal finance management system designed to help users track, analyze, and optimize their financial behavior. Beyond basic tracking, it focuses on delivering actionable insights through analytics and AI-driven recommendations.
 
-## ✨ Features
+---
 
-### Dashboard
-- 📊 **Summary Cards**: View total income, expenses, net balance, and budget status at a glance
-- 📈 **Expense Chart**: Visual breakdown of expenses by category using Recharts
-- 📝 **Recent Transactions**: Quick view of latest transactions
+## 🚀 Overview
 
-### Transactions
-- ➕ **Add Income/Expense**: Create transactions with categories and descriptions
-- ✏️ **Edit & Delete**: Modify or remove existing transactions
-- 🔍 **Search & Filter**: Filter by type, category, date range, and description
-- 📅 **Date Selection**: Set transaction date for accurate tracking
+SpendWise allows users to manage their income, expenses, budgets, and savings goals while providing a clear financial overview through interactive dashboards and intelligent analysis.
 
-### Categories
-- 🏷️ **Create Categories**: Organize transactions with custom categories
-- 🎨 **Type Support**: Separate categories for Income and Expense
-- 📊 **Transaction Count**: See how many transactions use each category
+This project emphasizes **backend architecture, API design, and secure data handling**, making it a robust and scalable financial system.
 
-### Budgets
-- 🎯 **Monthly Budgets**: Set spending limits for each month
-- 📊 **Progress Tracking**: Visual progress bar with real-time spending updates
-- 📜 **Budget History**: View past budgets with easy restore
-- ⚠️ **Over Budget Alerts**: Color-coded warnings when approaching or exceeding limits
+---
 
-### Savings Goals
-- 🏦 **Goal Setting**: Create savings targets with deadlines
-- 💸 **Track Contributions**: Add contributions and watch progress grow
-- 📈 **Progress Visualization**: See percentage complete and days remaining
-- 🎉 **Completion Celebration**: Automatic completion when target is reached
+## 🧠 Key Capabilities
+
+- 📊 **Financial Analytics Dashboard**  
+  Real-time insights into income, expenses, net balance, and category-based spending trends
+
+- 💳 **Transaction Management System**  
+  Structured APIs for handling financial data with filtering, categorization, and validation
+
+- 🎯 **Budgeting Engine**  
+  Monthly budget tracking with real-time progress monitoring and overspending detection
+
+- 🏦 **Savings Goal Tracking**  
+  Goal-based savings system with contribution tracking and progress visualization
+
+- 🔐 **Secure Authentication**  
+  JWT-based authentication to protect user data and enforce access control
+
+- 🐳 **Containerized Deployment**  
+  Fully dockerized application for consistent development and deployment environments
+
+---
+
+## 🧠 (Optional) AI Features *(in progress / planned)*
+
+- 🤖 Automated spending analysis and insights  
+- 📈 Detection of spending patterns and anomalies  
+- 💡 Personalized financial recommendations  
+
+---
+
+## 🏗️ Backend Architecture Highlights
+
+- Designed using **clean architecture principles** for maintainability and scalability  
+- Implemented **RESTful API design** with proper resource modeling  
+- Utilized **dependency injection and repository pattern** for modularity  
+- Structured data models for efficient handling of financial transactions and relationships  
+- Secure API endpoints with **JWT authentication and authorization middleware**  
+
+---
 
 ## 🛠️ Tech Stack
 
 ### Backend
-- **Framework**: ASP.NET Core 8
-- **Database**: SQL Server with Entity Framework Core
-- **Authentication**: JWT (JSON Web Tokens)
-- **Architecture**: Repository Pattern with Dependency Injection
-- **API Documentation**: Swagger/OpenAPI
+- **Framework**: ASP.NET Core 8  
+- **Database**: SQL Server + Entity Framework Core  
+- **Authentication**: JWT (JSON Web Tokens)  
+- **Architecture**: Clean Architecture (Repository Pattern, DI)  
+- **API Docs**: Swagger / OpenAPI  
 
 ### Frontend
-- **Framework**: React 18 with Vite
-- **Styling**: Tailwind CSS v2
-- **Charts**: Recharts
-- **Icons**: React Icons (Fi icons)
-- **Routing**: React Router v6
-- **State Management**: React Context API
+- **Framework**: React (Vite)  
+- **Styling**: Tailwind CSS  
+- **Charts**: Recharts  
+- **Routing**: React Router  
+- **State Management**: Context API  
+
+---
+
+## 📦 Deployment
+
+- Dockerized backend and frontend services  
+- Ready for deployment on platforms like Render, Railway, or cloud providers  
+
+---
+
+## 📌 Project Goals
+
+- Build a **production-ready backend system** with proper architecture  
+- Apply real-world concepts such as authentication, API design, and data modeling  
+- Extend into AI-powered financial insights for smarter decision-making  
+
+---
+
+## 📷 Demo
+
+*(Add screenshots or a demo video here)*
+
+---
+
+## 🔗 Links
+
+- Live Demo: *(add if deployed)*  
+- Backend Repo: *(add link)*  
+- Frontend Repo: *(add link)*  
