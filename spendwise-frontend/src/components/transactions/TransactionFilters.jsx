@@ -71,8 +71,11 @@ export default function TransactionFilters({
       <div className="flex flex-wrap gap-3 items-center">
         {/* Category Filter */}
         <select
-          value={selectedCategory || ""}
-          onChange={(e) => onCategoryChange(e.target.value || null)}
+          value={selectedCategory?.toString() || ""}   // ← convert number to string for display
+          onChange={(e) => {
+            const val = e.target.value;
+            onCategoryChange(val ? parseInt(val, 10) : null);   // ← convert back to number or null
+          }}
           className="bg-gray-900 border border-gray-800 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-[#4E71FF] focus:ring-1 focus:ring-[#4E71FF] transition"
         >
           <option value="">All Categories</option>

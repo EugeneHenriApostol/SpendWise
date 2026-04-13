@@ -129,7 +129,7 @@ export default function LoginPage() {
           </div>
 
           {/* Google */}
-          <button
+          {/* <button
             type="button"
             disabled
             className="w-full flex items-center justify-center gap-2.5 bg-gray-800 border border-gray-700 text-gray-400 text-sm font-medium py-2.5 rounded-lg cursor-not-allowed opacity-60"
@@ -142,7 +142,7 @@ export default function LoginPage() {
             </svg>
             Sign in with Google
             <span className="text-xs text-gray-600">(coming soon)</span>
-          </button>
+          </button> */}
 
           {/* Footer */}
           <p className="text-center text-sm text-gray-500 mt-6">

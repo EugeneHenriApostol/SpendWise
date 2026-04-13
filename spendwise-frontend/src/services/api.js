@@ -23,11 +23,10 @@ export const api = {
       }
       throw new Error("Session expired. Please login again.");
     }
-    
-    // For budget endpoints, 200 with null is valid, so don't throw
+
     if (endpoint.startsWith("/budget") && res.status === 200) {
       const data = await res.json();
-      return data; // This could be null
+      return data;
     }
     
     if (!res.ok) throw new Error(`API Error: ${res.status}`);

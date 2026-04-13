@@ -15,8 +15,6 @@ export const authService = {
       throw new Error(data.errorMessage || "Login failed");
     }
     
-    // Your backend returns { success, errorMessage, user }
-    // and user contains { token, user }
     if (data.success && data.user) {
       return {
         token: data.user.token,
@@ -38,9 +36,7 @@ export const authService = {
     if (!res.ok) {
       throw new Error(data.errorMessage || "Sign up failed");
     }
-    
-    // Your backend returns { success, errorMessage, user }
-    // and user contains { token, user }
+
     if (data.success && data.user) {
       return {
         token: data.user.token,

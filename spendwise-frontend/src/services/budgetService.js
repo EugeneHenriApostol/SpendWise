@@ -9,7 +9,6 @@ export const budgetService = {
   async getBudget(month, year, token) {
     try {
       const response = await api.get(`/budget/${month}/${year}`, token);
-      // response now has { exists, budget }
       return response.budget; // This will be null if no budget exists
     } catch (error) {
       console.error("Failed to fetch budget:", error);

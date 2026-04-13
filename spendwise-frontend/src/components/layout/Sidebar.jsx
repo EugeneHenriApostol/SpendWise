@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { 
@@ -9,9 +8,7 @@ import {
   FiPieChart, 
   FiUser, 
   FiLogOut,
-  FiMenu,
   FiX,
-  FiCpu
 } from "react-icons/fi";
 import logo from "../../assets/logo.png";
 
@@ -21,7 +18,6 @@ const navigation = [
   { name: "Categories", href: "/categories", icon: FiFolder },
   { name: "Budgets", href: "/budgets", icon: FiTarget },
   { name: "Savings", href: "/savings", icon: FiPieChart },
-  { name: "AI Insights", href: "/ai-insights", icon: FiCpu },
 ];
 
 export default function Sidebar({ mobileOpen, setMobileOpen }) {

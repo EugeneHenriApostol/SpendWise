@@ -78,7 +78,10 @@ export default function TransactionsPage() {
     
     // Filter by category
     if (selectedCategory) {
-      filtered = filtered.filter(t => t.categoryId === selectedCategory);
+      const catId = typeof selectedCategory === 'string'
+        ? parseInt(selectedCategory, 10)
+        : selectedCategory;
+      filtered = filtered.filter(t => t.categoryId === catId);
     }
     
     // Filter by search term
@@ -90,10 +93,22 @@ export default function TransactionsPage() {
     
     // Filter by date range
     if (dateRange.from) {
-      filtered = filtered.filter(t => new Date(t.date) >= new Date(dateRange.from));
+      const fromDate = new Date(dateRange.from);
+      fromDate.setHours(0, 0, 0, 0);
+      filtered = filtered.filter(t => {
+        const txDate = new Date(t.date);
+        txDate.setHours(0, 0, 0, 0);
+        return txDate >= fromDate;
+      });
     }
     if (dateRange.to) {
-      filtered = filtered.filter(t => new Date(t.date) <= new Date(dateRange.to));
+      const toDate = new Date(dateRange.to);
+      toDate.setHours(23, 59, 59, 999);
+      filtered = filtered.filter(t => {
+        const txDate = new Date(t.date);
+        txDate.setHours(0, 0, 0, 0);
+        return txDate <= toDate;
+      });
     }
     
     // Sort by date (newest first)
