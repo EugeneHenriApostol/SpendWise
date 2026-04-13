@@ -85,9 +85,9 @@ This project emphasizes **backend architecture, API design, and secure data hand
 
 ---
 
-## 📷 Demo
+<!-- ## 📷 Demo
 
-*(Add screenshots or a demo video here)*
+(Add screenshots or a demo video here) -->
 
 ---
 
