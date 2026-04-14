@@ -61,16 +61,13 @@ export default function BudgetsPage() {
     try {
       setLoadingHistory(true);
       setError(null);
-      
-      // ONE API CALL to get ALL budgets
+
       const allBudgets = await budgetService.getAllBudgets(token);
       
-      // Filter out current month if you don't want it in history
       const history = allBudgets.filter(budget => {
         return !(budget.month === currentMonth && budget.year === currentYear);
       });
       
-      // Sort by year and month (most recent first)
       history.sort((a, b) => {
         if (a.year !== b.year) return b.year - a.year;
         return b.month - a.month;
