@@ -44,6 +44,21 @@ namespace SpendWise.Controllers
             return Ok(result);
         }
 
+        [HttpGet("paginated")]
+        public async Task<IActionResult> GetPaginatedTransactions(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? filterType = null,
+            [FromQuery] int? categoryId = null,
+            [FromQuery] string? searchTerm = null,
+            [FromQuery] DateTime? fromDate = null,
+            [FromQuery] DateTime? toDate = null)
+        {
+            var result = await _service.GetPaginatedTransactions(
+                UserId, pageNumber, pageSize, filterType, categoryId, searchTerm, fromDate, toDate);
+            return Ok(result);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTransaction(int id, UpdateTransactionDto dto)
         {

@@ -1,4 +1,3 @@
-//TransactionsPage.jsx
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { transactionService } from "../services/transactionService";
@@ -6,6 +5,7 @@ import { categoryService } from "../services/categoryService";
 import TransactionModal from "../components/transactions/TransactionModal";
 import TransactionCard from "../components/transactions/TransactionCard";
 import TransactionFilters from "../components/transactions/TransactionFilters";
+import Pagination from "../components/common/Pagination";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import { FiPlus, FiAlertCircle, FiTrendingUp, FiTrendingDown } from "react-icons/fi";
 
@@ -13,20 +13,29 @@ export default function TransactionsPage() {
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
   const [transactions, setTransactions] = useState([]);
-  const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("create");
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [error, setError] = useState(null);
   
+  // Pagination state
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    pageSize: 10,
+    totalCount: 0,
+    totalPages: 0,
+    hasPreviousPage: false,
+    hasNextPage: false
+  });
+
   // Filters
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [dateRange, setDateRange] = useState({ from: null, to: null });
 
-  // Stats
+  // Stats (calculated from filtered data)
   const [stats, setStats] = useState({
     totalIncome: 0,
     totalExpenses: 0,
@@ -34,30 +43,56 @@ export default function TransactionsPage() {
     transactionCount: 0,
   });
 
+  // Fetch data when page, filters, or pagination changes
   useEffect(() => {
-    fetchData();
+    fetchPaginatedData();
+  }, [pagination.currentPage, pagination.pageSize, filterType, selectedCategory, searchTerm, dateRange]);
+
+  // Also fetch categories on mount
+  useEffect(() => {
+    fetchCategories();
   }, []);
 
-  useEffect(() => {
-    filterTransactions();
-  }, [transactions, searchTerm, filterType, selectedCategory, dateRange]);
+  const fetchCategories = async () => {
+    try {
+      const categoriesData = await categoryService.getCategories(token);
+      setCategories(categoriesData);
+    } catch (err) {
+      console.error("Failed to fetch categories:", err);
+    }
+  };
 
-  useEffect(() => {
-    calculateStats();
-  }, [filteredTransactions]);
-
-  const fetchData = async () => {
+  const fetchPaginatedData = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const [transactionsData, categoriesData] = await Promise.all([
-        transactionService.getTransactions(token),
-        categoryService.getCategories(token),
-      ]);
+      const params = {
+        pageNumber: pagination.currentPage,
+        pageSize: pagination.pageSize,
+        filterType: filterType,
+        categoryId: selectedCategory,
+        searchTerm: searchTerm || null,
+        fromDate: dateRange.from,
+        toDate: dateRange.to
+      };
       
-      setTransactions(transactionsData);
-      setCategories(categoriesData);
+      const response = await transactionService.getPaginatedTransactions(token, params);
+      
+      setTransactions(response.items);
+      setPagination({
+        currentPage: response.pageNumber,
+        pageSize: response.pageSize,
+        totalCount: response.totalCount,
+        totalPages: response.totalPages,
+        hasPreviousPage: response.hasPreviousPage,
+        hasNextPage: response.hasNextPage
+      });
+      
+      // Calculate stats from all transactions (you might want a separate endpoint for this)
+      // For now, we'll just show stats for current page
+      calculateStats(response.items);
+      
     } catch (err) {
       console.error("Failed to fetch transactions:", err);
       setError("Failed to load transactions. Please try again.");
@@ -66,63 +101,12 @@ export default function TransactionsPage() {
     }
   };
 
-  const filterTransactions = () => {
-    let filtered = [...transactions];
-    
-    // Filter by type
-    if (filterType === "expense") {
-      filtered = filtered.filter(t => t.type === "Expense");
-    } else if (filterType === "income") {
-      filtered = filtered.filter(t => t.type === "Income");
-    }
-    
-    // Filter by category
-    if (selectedCategory) {
-      const catId = typeof selectedCategory === 'string'
-        ? parseInt(selectedCategory, 10)
-        : selectedCategory;
-      filtered = filtered.filter(t => t.categoryId === catId);
-    }
-    
-    // Filter by search term
-    if (searchTerm.trim()) {
-      filtered = filtered.filter(t =>
-        t.description?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    
-    // Filter by date range
-    if (dateRange.from) {
-      const fromDate = new Date(dateRange.from);
-      fromDate.setHours(0, 0, 0, 0);
-      filtered = filtered.filter(t => {
-        const txDate = new Date(t.date);
-        txDate.setHours(0, 0, 0, 0);
-        return txDate >= fromDate;
-      });
-    }
-    if (dateRange.to) {
-      const toDate = new Date(dateRange.to);
-      toDate.setHours(23, 59, 59, 999);
-      filtered = filtered.filter(t => {
-        const txDate = new Date(t.date);
-        txDate.setHours(0, 0, 0, 0);
-        return txDate <= toDate;
-      });
-    }
-    
-    // Sort by date (newest first)
-    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    setFilteredTransactions(filtered);
-  };
-
-  const calculateStats = () => {
-    const totalIncome = filteredTransactions
+  const calculateStats = (items) => {
+    const totalIncome = items
       .filter(t => t.type === "Income")
       .reduce((sum, t) => sum + t.amount, 0);
     
-    const totalExpenses = filteredTransactions
+    const totalExpenses = items
       .filter(t => t.type === "Expense")
       .reduce((sum, t) => sum + t.amount, 0);
     
@@ -130,15 +114,14 @@ export default function TransactionsPage() {
       totalIncome,
       totalExpenses,
       netBalance: totalIncome - totalExpenses,
-      transactionCount: filteredTransactions.length,
+      transactionCount: items.length,
     });
   };
 
   const handleCreateTransaction = async (data) => {
     try {
       await transactionService.createTransaction(data, token);
-      await fetchData();
-      // refresh dashboard data if needed
+      await fetchPaginatedData(); // Refresh current page
       window.dispatchEvent(new Event('focus'));
     } catch (err) {
       console.error("Failed to create transaction:", err);
@@ -149,7 +132,7 @@ export default function TransactionsPage() {
   const handleUpdateTransaction = async (data) => {
     try {
       await transactionService.updateTransaction(selectedTransaction.id, data, token);
-      await fetchData();
+      await fetchPaginatedData();
     } catch (err) {
       console.error("Failed to update transaction:", err);
       throw err;
@@ -166,7 +149,7 @@ export default function TransactionsPage() {
     if (window.confirm(`Are you sure you want to delete this ${transaction.type} of ₱${transaction.amount.toLocaleString()}?`)) {
       try {
         await transactionService.deleteTransaction(transaction.id, token);
-        await fetchData();
+        await fetchPaginatedData();
       } catch (err) {
         console.error("Failed to delete transaction:", err);
         alert("Failed to delete transaction. Please try again.");
@@ -185,9 +168,19 @@ export default function TransactionsPage() {
     setFilterType("all");
     setSelectedCategory(null);
     setDateRange({ from: null, to: null });
+    setPagination(prev => ({ ...prev, currentPage: 1 }));
   };
 
-  if (loading) {
+  const handlePageChange = (newPage) => {
+    setPagination(prev => ({ ...prev, currentPage: newPage }));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePageSizeChange = (newSize) => {
+    setPagination(prev => ({ ...prev, pageSize: newSize, currentPage: 1 }));
+  };
+
+  if (loading && transactions.length === 0) {
     return <LoadingSpinner />;
   }
 
@@ -214,7 +207,7 @@ export default function TransactionsPage() {
         <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-red-950 border border-red-800 text-red-400">
           <FiAlertCircle size={18} />
           <span className="text-sm">{error}</span>
-          <button onClick={fetchData} className="ml-auto text-sm underline hover:no-underline">
+          <button onClick={fetchPaginatedData} className="ml-auto text-sm underline hover:no-underline">
             Retry
           </button>
         </div>
@@ -252,7 +245,7 @@ export default function TransactionsPage() {
             <p className={`text-xl font-bold ${stats.netBalance >= 0 ? "text-green-400" : "text-red-400"}`}>
               ₱{stats.netBalance.toLocaleString()}
             </p>
-            <p className="text-gray-500 text-xs mt-1">{stats.transactionCount} transactions</p>
+            <p className="text-gray-500 text-xs mt-1">Showing {transactions.length} of {pagination.totalCount} transactions</p>
           </div>
         </div>
       </div>
@@ -272,7 +265,7 @@ export default function TransactionsPage() {
       />
 
       {/* Transactions List */}
-      {filteredTransactions.length === 0 ? (
+      {transactions.length === 0 ? (
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-12 text-center">
           <div className="inline-flex p-4 rounded-2xl bg-gray-800 mb-4">
             <FiPlus size={32} className="text-gray-500" />
@@ -293,17 +286,31 @@ export default function TransactionsPage() {
           )}
         </div>
       ) : (
-        <div className="space-y-3">
-          {filteredTransactions.map((transaction) => (
-            <TransactionCard
-              key={transaction.id}
-              transaction={transaction}
-              categories={categories}
-              onEdit={handleEditTransaction}
-              onDelete={handleDeleteTransaction}
+        <>
+          <div className="space-y-3">
+            {transactions.map((transaction) => (
+              <TransactionCard
+                key={transaction.id}
+                transaction={transaction}
+                categories={categories}
+                onEdit={handleEditTransaction}
+                onDelete={handleDeleteTransaction}
+              />
+            ))}
+          </div>
+          
+          {/* Pagination */}
+          {pagination.totalPages > 1 && (
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              onPageChange={handlePageChange}
+              pageSize={pagination.pageSize}
+              onPageSizeChange={handlePageSizeChange}
+              totalCount={pagination.totalCount}
             />
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       {/* Modal */}

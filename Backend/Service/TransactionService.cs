@@ -87,6 +87,29 @@ namespace SpendWise.Service
             return MapToDto(transaction);
         }
 
+        public async Task<PaginatedResponseDto<TransactionResponseDto>> GetPaginatedTransactions(
+            string userId,
+            int pageNumber = 1,
+            int pageSize = 10,
+            string? filterType = null,
+            int? categoryId = null,
+            string? searchTerm = null,
+            DateTime? fromDate = null,
+            DateTime? toDate = null
+            )
+        {
+            var (transactions, totalCount) = await _repo.GetPaginatedAsync(
+                userId, pageNumber, pageSize, filterType, categoryId, searchTerm, fromDate, toDate);
+
+            return new PaginatedResponseDto<TransactionResponseDto>
+            {
+                Items = transactions.Select(MapToDto).ToList(),
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+            };
+        }
+
         private static TransactionResponseDto MapToDto(Transaction transaction)
         {
             return new TransactionResponseDto
