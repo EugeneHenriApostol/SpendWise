@@ -36,9 +36,7 @@ This project emphasizes **backend architecture, API design, and secure data hand
 
 ## AI Features
 
-- Chatbot 
-- Detection of spending patterns and anomalies  
-- Personalized financial recommendations  
+- Chatbot to get personalized financial advice
 
 ---
 
@@ -55,10 +53,10 @@ This project emphasizes **backend architecture, API design, and secure data hand
 ## 🛠️ Tech Stack
 
 ### Backend
-- **Framework**: ASP.NET Core 8  
+- **Framework**: ASP.NET Core 9  
 - **Database**: SQL Server + Entity Framework Core  
 - **Authentication**: JWT (JSON Web Tokens)  
-- **Architecture**: Clean Architecture (Repository Pattern, DI)  
+- **Architecture**: Clean Architecture (Repository Pattern, DI, Separation of Concerns)  
 - **API Docs**: Swagger / OpenAPI  
 
 ### Frontend
@@ -84,6 +82,9 @@ This project emphasizes **backend architecture, API design, and secure data hand
 - Extend into AI-powered financial insights for smarter decision-making  
 
 ---
+
+## Screenshots
+
 
 <!-- ## 📷 Demo
 
