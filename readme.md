@@ -82,18 +82,3 @@ This project emphasizes **backend architecture, API design, and secure data hand
 - Extend into AI-powered financial insights for smarter decision-making  
 
 ---
-
-## Screenshots
-
-
-<!-- ## 📷 Demo
-
-(Add screenshots or a demo video here) -->
-
----
-
-<!-- ## 🔗 Links
-
-- Live Demo: *(add if deployed)*  
-- Backend Repo: *(add link)*  
-- Frontend Repo: *(add link)*   -->
