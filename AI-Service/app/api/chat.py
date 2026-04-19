@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 from app.models.chat import ChatRequest, ChatResponse
 from app.core.auth import validate_jwt_token
 from app.services.data_fetcher import DataFetcher
@@ -31,7 +31,8 @@ async def chat_endpoint(request: ChatRequest):
     5. Returns response to user
     """
 
-    validate_jwt_token(request.jwt_token)
+    user_info = validate_jwt_token(request.jwt_token)
+    print(f"User {user_info['user_id']} is asking: {request.question}")
 
     question_type = detect_question_type(request.question)
     print(f"Question type detected: {question_type}")
@@ -44,7 +45,6 @@ async def chat_endpoint(request: ChatRequest):
 
     ai_response = await gemini_service.generate_response(context, request.question)
     
-    # Step 6: Return response
     return ChatResponse(
         response=ai_response,
         question_type=question_type,
