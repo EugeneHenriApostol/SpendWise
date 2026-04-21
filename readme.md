@@ -70,7 +70,7 @@ This project emphasizes **backend architecture, API design, and secure data hand
 
 ## Deployment
 
-- Dockerized backend and frontend services  
+- Dockerized backend, frontend and AI services  
 - Ready for deploment
 
 ---
