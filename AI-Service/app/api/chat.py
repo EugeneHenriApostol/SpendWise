@@ -31,6 +31,11 @@ async def chat_endpoint(request: ChatRequest):
     5. Returns response to user
     """
 
+    # Debug: Print the received token
+    print(f"\n=== CHAT REQUEST RECEIVED ===")
+    print(f"Token in request: {request.jwt_token[:50] if request.jwt_token else 'None'}...")
+    print(f"Question: {request.question}")
+    
     user_info = validate_jwt_token(request.jwt_token)
     print(f"User {user_info['user_id']} is asking: {request.question}")
 

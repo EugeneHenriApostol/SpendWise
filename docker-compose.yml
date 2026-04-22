@@ -40,13 +40,13 @@ services:
       - spendwise-network
     restart: unless-stopped
 
-  # NEW: AI Service (FastAPI + Gemini)
   ai-service:
     build: ./ai-service
     container_name: spendwise-ai
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - API_BASE_URL=http://backend:80
+      - JWT_KEY=${JWT_KEY}
       - PORT=8000
     ports:
       - "8000:8000"

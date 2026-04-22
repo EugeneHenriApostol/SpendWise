@@ -36,7 +36,7 @@ This project emphasizes **backend architecture, API design, and secure data hand
 
 ## AI Features
 
-- Chatbot to get personalized financial advice
+- Chatbot to get personalized financial advice based on your data
 
 ---
 
@@ -78,7 +78,16 @@ This project emphasizes **backend architecture, API design, and secure data hand
 ## Project Goals
 
 - Build a **production-ready backend system** with proper architecture  
-- Apply real-world concepts such as authentication, API design, and data modeling  
+- Apply real-world software engineering concepts such as authentication, API design, data modelling, and clean architecture.
 - Extend into AI-powered financial insights for smarter decision-making  
 
 ---
+
+## Screenshots
+
+
+## How to run the App
+- Clone the repository
+- Install python dependencies (pip install -r "requirements.txt")
+- Install node packages (npm install)
+- Rebuild and Run .NET Core WebAPI using Visual Studio or execute command dotnet run if using Visual Studio Code editor
